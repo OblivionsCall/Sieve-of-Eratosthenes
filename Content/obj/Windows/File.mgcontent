@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/Hando/documents/visual studio 2015/Projects/Eratosthenes/Eratosthenes/Content/File.spritefont</SourceFile>
+  <SourceTime>2018-02-12T19:18:20.951069-07:00</SourceTime>
+  <DestFile>C:/Users/Hando/documents/visual studio 2015/Projects/Eratosthenes/Eratosthenes/Content/bin/Windows/File.xnb</DestFile>
+  <DestTime>2018-02-12T19:18:26.9115416-07:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2017-03-01T08:05:36-07:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2017-03-01T08:05:36-07:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
