@@ -27,6 +27,7 @@ namespace Eratosthenes
             colour = c;
         }
 
+        // Draws the circle and uses some algebra voodoo and way too much casting to place them correctly
         public void DrawCircle(SpriteBatch s, int x_zero, int y_zero)
         {
             s.Draw(texture, new Rectangle(x_zero + xLocation * space, (int)(y_zero - space * ((double)diameter / 2)), diameter * space, (int)(diameter * (double)space / 2)), colour);
