@@ -14,15 +14,25 @@ namespace Eratosthenes
     {
         // Change this to change how large the graph is.
         int n = 100;
+        
+        // How quickly the colours change. Lower = Slower, Range(0-255)
+        // The Colours begin with full blue, cycle through green, to red, and back to blue
+        int colour_step = 64;
 
+        // Set your Window Size here
+        int screen_width = 1280;
+        int screen_height = 720;
+        
+        // How many frames between each drawing of a semicircle. I decided 10 frames was a good number here.
+        int delay = 10;
+
+        // Sprites, Font, and Lists
         Texture2D circleTex;
         Texture2D pixel;
         SpriteFont ActionMan;
         List<int> PrimeList;
         List<Circle> CircleList;
 
-        int screen_width = 1280;
-        int screen_height = 720;
         int x_zero;
         int y_zero;
         int space;
@@ -33,7 +43,6 @@ namespace Eratosthenes
         int g;
         int b;
         int a;
-        int colour_step = 64;
 
         string msg = "Press Space to Begin Animation";
         
@@ -41,7 +50,6 @@ namespace Eratosthenes
         int current_diameter;
         int current_prime_index;
         int current_x_loc;
-        int delay = 10;
         int current_delta;
 
         bool done = false;
@@ -72,18 +80,22 @@ namespace Eratosthenes
 
             base.Initialize();
 
+            // Setting where the axis will be hanging out and calculating the space between hashes
             x_zero = 20;
             y_zero = screen_height - 20;
             space = (screen_width - 20) / n;
 
+            // Initialize RGBA for colours
             r = 0;
             g = 0;
             b = 255;
-            a = 128;
+            a = 255;
 
+            // Generate list of primes and create the Circle List
             PrimeList = primeFinder();
             CircleList = new List<Circle>();
 
+            // Create the first circle and set the variables for the circle creation loop in Update()
             current_prime_index = 0;
             current_x_loc = PrimeList[current_prime_index];
             current_diameter = PrimeList[current_prime_index];
@@ -123,9 +135,11 @@ namespace Eratosthenes
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            // Select or Escape to quit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Just press space or start to begin animation
             if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Space))
                 begin = true;
 
@@ -133,25 +147,32 @@ namespace Eratosthenes
             {
                 current_delta += 1;
 
+                // If it's time to draw a circle, reset the delta and do it
                 if (current_delta >= delay && !done)
                 {
                     current_delta = 0;
-
+                    
+                    // Set the X location
                     current_x_loc += current_diameter;
-
+                    
+                    // If we're off the screen
                     if (current_x_loc > n + current_diameter)
                     {
+                        // Go to the next prime number
                         current_prime_index++;
-
+                        
+                        // If we're finished with the list, stop trying to add primes that don't exist
                         if (current_prime_index >= PrimeList.Count)
                         {
                             current_prime_index--;
                             done = true;
                         }
-
+                        
+                        // Get the new location and diameter (just the prime number)
                         current_x_loc = PrimeList[current_prime_index];
                         current_diameter = PrimeList[current_prime_index];
-
+                        
+                        // Select the next colour, cycles through Blue -> Green -> Red -> Blue...
                         if (b != 0 && r == 0)
                         {
                             b -= colour_step;
@@ -184,12 +205,11 @@ namespace Eratosthenes
                         }
                     }
 
+                    // If we're not done, add a new circle to the list
                     if (!done)
                         CircleList.Add(new Circle(current_diameter, current_x_loc, space, circleTex, new Color(r, g, b, a)));
                 }
             }
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -204,6 +224,7 @@ namespace Eratosthenes
 
             spriteBatch.Begin();
 
+            // If the user hasn't decided to begin yet, display message
             if (!begin)
             {
                 Vector2 msgLocation = new Vector2();
@@ -216,7 +237,8 @@ namespace Eratosthenes
 
             else
             {
-                // TODO: Draw the Circles
+                // Draws the Circles. Reverses the list so the larger primes are in the 
+                // rear layers and the smaller circles can be seen
                 CircleList.Reverse();
                 foreach (Circle c in CircleList)
                 {
@@ -244,6 +266,8 @@ namespace Eratosthenes
                 }
 
                 // Nice Black Frame
+                // This really isn't necessary, just gets rid of the axes in quadrants II, III, and IV
+                // because we don't do anything there
                 spriteBatch.Draw(pixel, new Rectangle(0, y_zero + 1, screen_width, 20), Color.Black);
                 spriteBatch.Draw(pixel, new Rectangle(0, 0, 19, screen_height), Color.Black);
             }
@@ -260,7 +284,8 @@ namespace Eratosthenes
             int num = 0;
 
             // Create a list of ints that will ONLY contain primes but initially contains every int up to n
-            // Create an array for each element in initial list
+            // Create an array for each element in initial list, sets zero to not prime. Zero is used
+            // so that the list indicies and the boolean indices match
             List<int> return_list = new List<int>();
             bool[] is_prime = new bool[size + 1];
             is_prime[0] = false;
@@ -276,6 +301,7 @@ namespace Eratosthenes
                     is_prime[i] = true;
             }
 
+            // Sets multiples of primes to false
             while (num <= (int)Math.Ceiling(Math.Sqrt(size)))
             {
                 if (!is_prime[num])
@@ -293,6 +319,7 @@ namespace Eratosthenes
                 }
             }
 
+            // Removes non-primes from the list
             for (int i = 0; i <= size; i++)
             {
                 if (!is_prime[i])
